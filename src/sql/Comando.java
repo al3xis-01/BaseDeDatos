@@ -3,19 +3,28 @@ package sql;
 import javax.swing.*;
 import java.sql.*;
 
-public class Comando {
+public abstract class Comando {
     private Connection con;
     private boolean status_connection;
+    private Conexion conexion;
 
     public Comando() {
         init();
+    }
 
+    public Comando(String user, String pass, String db_name, String host_name, String port, String driver){
+        conexion = new Conexion(user,pass,db_name,host_name,port,driver);
+        con = conexion.conectar();
+        if(con == null) status_connection = false;
+        else status_connection = true;
     }
 
     private void init() {
-        con = new Conexion().conectar();
+        conexion = new Conexion();
+        con = conexion.conectar();
         if(con == null) status_connection = false;
         else status_connection = true;
+
     }
 
     public ResultSet obtener(String table_name,String where){
@@ -26,7 +35,6 @@ public class Comando {
 
     public ResultSet obtener(String consult){
         if(status_connection){ // status_connection == true if conn is connected
-
             try {
                 PreparedStatement preparedStatement = con.prepareStatement(consult);
                 ResultSet resultSet = preparedStatement.executeQuery();
@@ -42,6 +50,10 @@ public class Comando {
     }
 
     public boolean insert(String consult){
+        return enterCommand(consult);
+    }
+
+    public boolean delete(String consult){
         return enterCommand(consult);
     }
 
@@ -65,9 +77,8 @@ public class Comando {
         return false;
     }
 
-    public boolean delete(String consult){
-        return enterCommand(consult);
-    }
+
+
 
 
 
