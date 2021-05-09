@@ -3,7 +3,7 @@ package sql;
 import javax.swing.*;
 import java.sql.*;
 
-public abstract class Comando {
+public class Comando {
     private Connection con;
     private boolean status_connection;
     private Conexion conexion;
